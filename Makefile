@@ -1,4 +1,5 @@
 compile:
+	@[ -d foo/. ] || mkdir build
 	@gcc -c lib/cancel.c -o ./build/cancel.o
 	@gcc -c lib/createjob.c -o ./build/createjob.o
 	@gcc -c lib/freestats.c -o ./build/freestats.o
