@@ -1,4 +1,7 @@
 .vscode
+.devcontainer
 .DS_Store
 *.o
 *.exe
+build
+runner

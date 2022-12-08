@@ -1,6 +1,7 @@
 #ifndef LIB_H_ /* Include guard */
 #define LIB_H_
 
+// Types
 typedef int copyjob_t;
 
 struct copyjob_stats
@@ -8,11 +9,14 @@ struct copyjob_stats
     int foo;
 };
 
+// Library interface
 copyjob_t copy_createjob(const char *src, const char *dst);
 
 int copy_cancel(copyjob_t job);
 
 int copy_pause(copyjob_t job);
+
+int copy_resume(copyjob_t job);
 
 int copy_stats(copyjob_t job, struct copyjob_stats *stats);
 
