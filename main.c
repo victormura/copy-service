@@ -25,8 +25,8 @@ sem_t semaphore;
 // Input command parser
 int parse_command(char *command)
 {
-    if (strcmp(command, "cp") == 0) return CREATE;
-    else if (strcmp(command, "ls") == 0) return LIST;
+    if (strcmp(command, "cp") == 0 || strcmp(command, "copy") == 0) return CREATE;
+    else if (strcmp(command, "ls") == 0 || strcmp(command, "list") == 0) return LIST;
     else if (strcmp(command, "quit") == 0 || strcmp(command, "q") == 0) return QUIT;
     else if (strcmp(command, "cancel") == 0) return CANCEL;
     else if (strcmp(command, "pause") == 0) return PAUSE;
