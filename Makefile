@@ -8,7 +8,7 @@ compile:
 	@gcc -c lib/progress.c -o ./build/progress.o
 	@gcc -c lib/stats.c -o ./build/stats.o
 	@gcc -c main.c -o ./build/main.o
-	@gcc ./build/cancel.o ./build/createjob.o ./build/freestats.o ./build/listjobs.o ./build/pause.o ./build/progress.o ./build/stats.o ./build/main.o -o runner
+	@gcc ./build/cancel.o ./build/createjob.o ./build/freestats.o ./build/listjobs.o ./build/pause.o ./build/progress.o ./build/stats.o ./build/main.o -o runner -pthread
 
 run: compile
 	@./runner

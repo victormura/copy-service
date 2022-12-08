@@ -38,7 +38,7 @@ int parse_command(char *command)
 int call_command(int code)
 {
     switch (code){
-        case CREATE:
+        case CREATE: ;
             // Create new copy JOB
             char src[256], dst[256];
 
@@ -53,7 +53,7 @@ int call_command(int code)
             printf("List jobs\n");
             return 0;
         
-        case PAUSE:
+        case PAUSE: ;
             // Pause JOB execution
             copyjob_t j_id;
             scanf("%d", &j_id);
