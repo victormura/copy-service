@@ -9,3 +9,12 @@
 ## Bibliography
 1. Subject description:
     https://os.cs.unibuc.ro/so/so-lab-proiect.pdf
+
+## Compiling files
+```
+gcc -c [filename].c
+...
+for each file 
+
+gcc [filename].o ... -o [programname]
+```

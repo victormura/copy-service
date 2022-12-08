@@ -1,7 +1,8 @@
 // Damon file
 #include "lib.h"
 
-int main(){
-    printf("Hello team!");
+int main()
+{
+    copy_cancel(100);
     return 0;
 }
