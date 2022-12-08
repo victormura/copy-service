@@ -5,6 +5,5 @@
 void copy_freestats(struct copyjob_stats *stats)
 {
     printf("Free stats memorty!\n");
-    //free(stats->foo);
     free(stats);
 };

@@ -22,6 +22,7 @@
 // Global vars
 pthread_mutex_t job_mutexes[MAX_JOBS];
 sem_t semaphore;
+struct copyjob_stats job_stats[MAX_JOBS];
 
 // Input command parser
 int parse_command(char *command)
@@ -77,6 +78,12 @@ int call_command(int code)
             return 0;
         case QUIT:
             // Quit DAEMON execution
+            // If are processes in progress ask user if he wants to cancel all or wait until they are done.
+            // -> Y - CANCEL ALL
+            // -> N - WAIT ALL
+            // for i in range(MAX_THEREADS) = 10/ 10THREDS -> 10 Ocupate -> 5
+            //     sem_wait(&semaphore) -> asteapta toate threadurile din semaphore sa se elibereze
+
             printf("Quit!\n");
             return 0;
         default:

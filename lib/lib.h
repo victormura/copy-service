@@ -5,17 +5,27 @@
 #include <semaphore.h>
 #include "../config.h"
 
+#define AVIALABLE 0
+#define IN_PROGRESS 1
+#define WAITING 2
+#define PAUSED 3
+
 // Types
 typedef int copyjob_t;
 
 struct copyjob_stats
 {
-    int foo;
+    char dst[256];
+    char src[256];
+    int state; // INITIAL STATE AVAILABLE
+    int total_size;
+    int copied_size;
 };
 
 // Global vars
 extern pthread_mutex_t job_mutexes[MAX_JOBS];
 extern sem_t semaphore;
+extern struct copyjob_stats job_stats[MAX_JOBS];
 
 // Library interface
 copyjob_t copy_createjob(const char *src, const char *dst);
