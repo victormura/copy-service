@@ -1,6 +1,10 @@
 #ifndef LIB_H_ /* Include guard */
 #define LIB_H_
 
+#include <pthread.h>
+#include <semaphore.h>
+#include "../config.h"
+
 // Types
 typedef int copyjob_t;
 
@@ -8,6 +12,10 @@ struct copyjob_stats
 {
     int foo;
 };
+
+// Global vars
+extern pthread_mutex_t job_mutexes[MAX_JOBS];
+extern sem_t semaphore;
 
 // Library interface
 copyjob_t copy_createjob(const char *src, const char *dst);
