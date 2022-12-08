@@ -52,8 +52,12 @@ int call_command(int code)
             // List all JOBS with their state (IN PROGRESS, WAITING, PAUSED)
             printf("List jobs\n");
             return 0;
+        
         case PAUSE:
             // Pause JOB execution
+            // copyjob_t job_id;
+            // scanf("%d", job_id);
+            // copy_pause(job_id);
             printf("Pause a JOB\n");
             return 0;
         case RESUME:

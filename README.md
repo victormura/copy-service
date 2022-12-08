@@ -12,5 +12,5 @@
 
 ## Compiling files and run service
 ```
-make compile && make run
+make
 ```

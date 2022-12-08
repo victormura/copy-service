@@ -12,3 +12,5 @@ compile:
 
 run:
 	@./runner
+
+.DEFAULT_GOAL=run
