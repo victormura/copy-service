@@ -55,9 +55,9 @@ int call_command(int code)
         
         case PAUSE:
             // Pause JOB execution
-            // copyjob_t job_id;
-            // scanf("%d", job_id);
-            // copy_pause(job_id);
+            copyjob_t j_id;
+            scanf("%d", &j_id);
+            copy_pause(j_id);
             printf("Pause a JOB\n");
             return 0;
         case RESUME:

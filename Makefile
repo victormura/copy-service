@@ -10,7 +10,7 @@ compile:
 	@gcc -c main.c -o ./build/main.o
 	@gcc ./build/cancel.o ./build/createjob.o ./build/freestats.o ./build/listjobs.o ./build/pause.o ./build/progress.o ./build/stats.o ./build/main.o -o runner
 
-run:
+run: compile
 	@./runner
 
 .DEFAULT_GOAL=run
