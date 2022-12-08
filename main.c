@@ -7,6 +7,7 @@
 #include <pthread.h>
 #include <semaphore.h>
 #include <errno.h>
+#include <ctype.h>
 
 // Define commands
 #define INVALID_COMMAND -1
@@ -25,6 +26,8 @@ sem_t semaphore;
 // Input command parser
 int parse_command(char *command)
 {
+    for(int i = 0; command[i]; i++)
+        command[i] = tolower(command[i]);
     if (strcmp(command, "cp") == 0 || strcmp(command, "copy") == 0) return CREATE;
     else if (strcmp(command, "ls") == 0 || strcmp(command, "list") == 0) return LIST;
     else if (strcmp(command, "quit") == 0 || strcmp(command, "q") == 0) return QUIT;
