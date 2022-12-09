@@ -10,7 +10,16 @@
 1. Subject description:
     https://os.cs.unibuc.ro/so/so-lab-proiect.pdf
 
-## Compiling files and run service
+## Compiling and run service
 ```
 make
+```
+## Testing
+#### In Daemon
+```
+$ cp tests/src/stest.txt dtest.txt
+```
+#### Unit Tests
+```
+make test
 ```
