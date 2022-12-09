@@ -1,0 +1,2 @@
+#define MAX_THREADS 10
+#define MAX_JOBS 100

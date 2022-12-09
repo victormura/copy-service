@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void copy_freestats(struct copyjob_stats *stats)
+void copy_freestats(copyjob_stats *stats)
 {
     printf("Free stats memorty!\n");
     free(stats);

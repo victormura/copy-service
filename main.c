@@ -21,8 +21,9 @@
 
 // Global vars
 pthread_mutex_t job_mutexes[MAX_JOBS];
+pthread_mutex_t stats_mutex;
 sem_t semaphore;
-struct copyjob_stats job_stats[MAX_JOBS];
+copyjob_stats jobs_stats[MAX_JOBS];
 
 // Input command parser
 int parse_command(char *command)
@@ -45,7 +46,6 @@ int call_command(int code)
         case CREATE: ;
             // Create new copy JOB
             char src[256], dst[256];
-
             scanf("%s", src);
             scanf("%s", dst);
 
@@ -83,7 +83,27 @@ int call_command(int code)
             // -> N - WAIT ALL
             // for i in range(MAX_THEREADS) = 10/ 10THREDS -> 10 Ocupate -> 5
             //     sem_wait(&semaphore) -> asteapta toate threadurile din semaphore sa se elibereze
-
+            int safe_quit = 1;
+            for (int i = 0; i < MAX_JOBS; i++){
+                if(jobs_stats[i].state != AVAILABLE){
+                    safe_quit = 0;
+                }
+            }
+            if (!safe_quit){
+                printf("You still have some copy processes in progress! Cancel or wait [c|w]");
+                char response[1];
+                scanf("%s", response);
+                if (strcmp(response, "c") == 0){
+                    for (int i = 0; i < MAX_THREADS; i++){
+                        if (jobs_stats[i].state != AVAILABLE) copy_cancel(i);
+                    }
+                } else {
+                    // Wait until all jobs will finish
+                    for (int i = 0; i < MAX_THREADS; i++){
+                        sem_wait(&semaphore);
+                    }
+                }
+            }
             printf("Quit!\n");
             return 0;
         default:
@@ -93,19 +113,8 @@ int call_command(int code)
 
 int main()
 {
-    // Init job_mutexes
-    for (int i = 0; i < MAX_JOBS; i++)
-        if (pthread_mutex_init(&job_mutexes[i], NULL))
-        {
-            perror(NULL);
-            return errno;
-        }
-    
-    // Init semaphore
-    if (sem_init(&semaphore, 0, MAX_THREADS))
-    {
-        perror(NULL);
-        return errno;
+    if (init_global_vars()){
+        return -1;
     }
 
     // Command processing
@@ -113,6 +122,7 @@ int main()
     while (command_code != QUIT)
     {
         char command[256];
+        printf("$ ");
         scanf("%s", command);
         command_code = parse_command(command);
         if (call_command(command_code)){
