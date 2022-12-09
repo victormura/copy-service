@@ -42,6 +42,7 @@ int parse_command(char *command)
 
 int call_command(int code)
 {
+    copyjob_t j_id;
     switch (code){
         case CREATE: ;
             // Create new copy JOB
@@ -65,7 +66,6 @@ int call_command(int code)
         
         case PAUSE: ;
             // Pause JOB execution
-            copyjob_t j_id;
             scanf("%d", &j_id);
             copy_pause(j_id);
             printf("Pause a JOB\n");
@@ -78,9 +78,10 @@ int call_command(int code)
             // Optain JOB stats and progress
             printf("JOB stats\n");
             return 0;
-        case CANCEL:
-            // Cancel JOB execution
-            printf("Cancel a JOB\n");
+        case CANCEL:;
+            scanf("%d", &j_id);
+            copy_cancel(j_id);
+            printf("Cancel JOB %d\n", j_id);
             return 0;
         case QUIT: ;
             // Quit DAEMON execution

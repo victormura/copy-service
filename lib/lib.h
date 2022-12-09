@@ -9,6 +9,7 @@
 #define IN_PROGRESS 1
 #define WAITING 2
 #define PAUSED 3
+#define CANCELED 4
 
 // Types
 typedef int copyjob_t;
