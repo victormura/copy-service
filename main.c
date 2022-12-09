@@ -42,9 +42,9 @@ int parse_command(char *command)
 
 int call_command(int code)
 {
-    copyjob_t j_id;
+    copyjob_t job_id;
     switch (code){
-        case CREATE: ;
+        case CREATE:
             // Create new copy JOB
             char *src, *dst;
             src = (char *)malloc(sizeof(char)*256);
@@ -52,7 +52,7 @@ int call_command(int code)
             scanf("%s", src);
             scanf("%s", dst);
 
-            copyjob_t job_id = copy_createjob(src, dst);
+            job_id = copy_createjob(src, dst);
             if (job_id == -1) {
                 printf("Couldn't create a new job!\n");
                 return 0;
@@ -64,10 +64,10 @@ int call_command(int code)
             printf("List jobs\n");
             return 0;
         
-        case PAUSE: ;
+        case PAUSE:
             // Pause JOB execution
-            scanf("%d", &j_id);
-            copy_pause(j_id);
+            scanf("%d", &job_id);
+            copy_pause(job_id);
             printf("Pause a JOB\n");
             return 0;
         case RESUME:
@@ -78,12 +78,12 @@ int call_command(int code)
             // Optain JOB stats and progress
             printf("JOB stats\n");
             return 0;
-        case CANCEL:;
-            scanf("%d", &j_id);
-            copy_cancel(j_id);
-            printf("Cancel JOB %d\n", j_id);
+        case CANCEL:
+            scanf("%d", &job_id);
+            copy_cancel(job_id);
+            printf("Cancel JOB %d\n", job_id);
             return 0;
-        case QUIT: ;
+        case QUIT:
             // Quit DAEMON execution
             // If are processes in progress ask user if he wants to cancel all or wait until they are done.
             // -> Y - CANCEL ALL
