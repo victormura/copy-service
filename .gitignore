@@ -6,4 +6,4 @@
 build
 runner
 tests/dst
-dtest.txt
+dtest*

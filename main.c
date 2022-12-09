@@ -45,13 +45,15 @@ int call_command(int code)
     switch (code){
         case CREATE: ;
             // Create new copy JOB
-            char src[256], dst[256];
+            char *src, *dst;
+            src = (char *)malloc(sizeof(char)*256);
+            dst = (char *)malloc(sizeof(char)*256);
             scanf("%s", src);
             scanf("%s", dst);
 
             copyjob_t job_id = copy_createjob(src, dst);
             if (job_id == -1) {
-                printf("Couldn't create a new job!");
+                printf("Couldn't create a new job!\n");
                 return 0;
             }
             printf("Copy job with ID=%d has started!\n", job_id);

@@ -15,9 +15,9 @@ typedef int copyjob_t;
 
 typedef struct
 {
-    char dst[256];
+    char* dst;
     int dst_fd;
-    char src[256];
+    char* src;
     int src_fd;
     int state; // INITIAL STATE AVAILABLE
     int total_size;
@@ -33,7 +33,7 @@ extern copyjob_stats jobs_stats[MAX_JOBS];
 int init_global_vars();
 
 // Library interface
-copyjob_t copy_createjob(const char *src, const char *dst);
+copyjob_t copy_createjob(char *src, char *dst);
 
 int copy_cancel(copyjob_t job);
 

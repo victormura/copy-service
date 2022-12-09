@@ -54,12 +54,16 @@ void* copy_process(void* argv){
 		free(buf);
         pthread_mutex_unlock(&job_mutexes[job_id]);
     }
+
+    pthread_mutex_lock(&job_stats_mutexes[job_id]);
+    jobs_stats[job_id].state = AVAILABLE;
+    pthread_mutex_unlock(&job_stats_mutexes[job_id]);
     printf("Processed JOB %d\n", job_id);
     sem_post(&semaphore);
 }
 
 
-copyjob_t copy_createjob(const char *src, const char *dst)
+copyjob_t copy_createjob(char *src, char *dst)
 {
     printf("Copying from %s to %s!\n", src, dst);
     // job_stats
@@ -89,7 +93,7 @@ copyjob_t copy_createjob(const char *src, const char *dst)
 		printf("In file '%s' you already have something, do you want to OVERWRITE! [y/n]: ", dst);
 		scanf("%s", overwrite);
 
-		if (strcmp(overwrite, "Y")|| strcmp(overwrite, "y")){
+		if (strcmp(overwrite, "Y") == 0 || strcmp(overwrite, "y") == 0){
             if (unlink(dst)){
                 perror("Can not delete destination file!\n");
                 return -1;
@@ -116,9 +120,9 @@ copyjob_t copy_createjob(const char *src, const char *dst)
             pthread_mutex_lock(&job_stats_mutexes[i]);
             job_id = i;
             copyjob_stats job_stats;
-            strcpy(job_stats.src, src);
+            job_stats.src = src;
             job_stats.src_fd = source_fd;
-            strcpy(job_stats.dst, dst);
+            job_stats.dst = dst;
             job_stats.dst_fd = dest_fd;
             job_stats.state = WAITING;
             job_stats.total_size = src_stats.st_size;
