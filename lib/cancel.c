@@ -6,6 +6,7 @@
 int copy_cancel(copyjob_t job)
 {
     pthread_mutex_lock(&job_stats_mutexes[job]);
+    if (jobs_stats[job].state != PAUSED) pthread_mutex_lock(&job_mutexes[job]);
     close(jobs_stats[job].dst_fd);
     close(jobs_stats[job].src_fd);
     int old_state = jobs_stats[job].state;
@@ -16,7 +17,7 @@ int copy_cancel(copyjob_t job)
         return -1;
     }
     pthread_mutex_unlock(&job_stats_mutexes[job]);
-    if (old_state == PAUSED) pthread_mutex_unlock(&job_mutexes[job]);
+    pthread_mutex_unlock(&job_mutexes[job]);
     sem_post(&semaphore);
     return 0;
 };
