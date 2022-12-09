@@ -16,7 +16,9 @@ typedef int copyjob_t;
 typedef struct
 {
     char dst[256];
+    int dst_fd;
     char src[256];
+    int src_fd;
     int state; // INITIAL STATE AVAILABLE
     int total_size;
     int copied_size;
@@ -24,6 +26,7 @@ typedef struct
 
 // Global vars
 extern pthread_mutex_t job_mutexes[MAX_JOBS];
+extern pthread_mutex_t job_stats_mutexes[MAX_JOBS];
 extern sem_t semaphore;
 extern copyjob_stats jobs_stats[MAX_JOBS];
 

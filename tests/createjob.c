@@ -10,7 +10,7 @@
 
 
 pthread_mutex_t job_mutexes[MAX_JOBS];
-pthread_mutex_t stats_mutex;
+pthread_mutex_t job_stats_mutexes[MAX_JOBS];
 sem_t semaphore;
 copyjob_stats jobs_stats[MAX_JOBS];
 

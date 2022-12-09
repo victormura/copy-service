@@ -4,13 +4,19 @@
 #include <errno.h>
 
 int init_global_vars(){
-     // Init job_mutexes
-    for (int i = 0; i < MAX_JOBS; i++)
+    // Init job_mutexes
+    for (int i = 0; i < MAX_JOBS; i++){
         if (pthread_mutex_init(&job_mutexes[i], NULL))
         {
             perror(NULL);
             return errno;
         }
+        if (pthread_mutex_init(&job_stats_mutexes[i], NULL))
+        {
+            perror(NULL);
+            return errno;
+        }
+    }
 
     // Init stats
     for (int i = 0; i < MAX_JOBS; i++)

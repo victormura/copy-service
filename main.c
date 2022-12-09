@@ -21,7 +21,7 @@
 
 // Global vars
 pthread_mutex_t job_mutexes[MAX_JOBS];
-pthread_mutex_t stats_mutex;
+pthread_mutex_t job_stats_mutexes[MAX_JOBS];
 sem_t semaphore;
 copyjob_stats jobs_stats[MAX_JOBS];
 
@@ -50,6 +50,10 @@ int call_command(int code)
             scanf("%s", dst);
 
             copyjob_t job_id = copy_createjob(src, dst);
+            if (job_id == -1) {
+                printf("Couldn't create a new job!");
+                return 0;
+            }
             printf("Copy job with ID=%d has started!\n", job_id);
             return 0;
         case LIST:
@@ -76,7 +80,7 @@ int call_command(int code)
             // Cancel JOB execution
             printf("Cancel a JOB\n");
             return 0;
-        case QUIT:
+        case QUIT: ;
             // Quit DAEMON execution
             // If are processes in progress ask user if he wants to cancel all or wait until they are done.
             // -> Y - CANCEL ALL
@@ -90,7 +94,7 @@ int call_command(int code)
                 }
             }
             if (!safe_quit){
-                printf("You still have some copy processes in progress! Cancel or wait [c|w]");
+                printf("You still have some copy jobs in progress! Cancel all jobs or wait until they are done [c|w]");
                 char response[1];
                 scanf("%s", response);
                 if (strcmp(response, "c") == 0){
