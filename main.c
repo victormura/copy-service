@@ -44,7 +44,7 @@ int call_command(int code)
 {
     copyjob_t job_id;
     switch (code){
-        case CREATE:
+        case CREATE: ;
             // Create new copy JOB
             char *src, *dst;
             src = (char *)malloc(sizeof(char)*256);
@@ -83,7 +83,7 @@ int call_command(int code)
             copy_cancel(job_id);
             printf("Cancel JOB %d\n", job_id);
             return 0;
-        case QUIT:
+        case QUIT: ;
             // Quit DAEMON execution
             // If are processes in progress ask user if he wants to cancel all or wait until they are done.
             // -> Y - CANCEL ALL
