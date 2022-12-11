@@ -46,7 +46,7 @@ int copy_stats(copyjob_t job, copyjob_stats *stats);
 
 int copy_progress(copyjob_t job);
 
-int copy_listjobs(copyjob_stats **statslist, unsigned int *jobscount);
+int copy_listjobs();
 
 void copy_freestats(copyjob_stats *stats);
 
