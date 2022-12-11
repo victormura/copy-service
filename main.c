@@ -68,12 +68,11 @@ int call_command(int code)
             // Pause JOB execution
             scanf("%d", &job_id);
             copy_pause(job_id);
-            printf("Pause a JOB\n");
             return 0;
         case RESUME:
             // Resume JOB execution
             scanf("%d", &job_id);
-            printf("Resume a JOB\n");
+            copy_resume(job_id);
             return 0;
         case STATS:
             // Optain JOB stats and progress

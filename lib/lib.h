@@ -50,4 +50,6 @@ int copy_listjobs();
 
 void copy_freestats(copyjob_stats *stats);
 
+int job_exists(copyjob_t job);
+
 #endif // LIB_H_
