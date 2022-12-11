@@ -13,12 +13,19 @@ compile:
 run: compile
 	@./runner
 
-test: clear_tests compile
+test_compile: clear_tests compile
 	@[ -d build/tests/. ] || mkdir build/tests/
 	@[ -d tests/dst/. ] || mkdir tests/dst/
 	@gcc -c ./tests/createjob.c -o ./build/tests/createjob.o
+	@gcc -c ./tests/job_list.c -o ./build/tests/job_list.o
 	@gcc ./build/init.o ./build/cancel.o ./build/createjob.o ./build/listjobs.o ./build/pause.o ./build/progress.o ./build/stats.o ./build/tests/createjob.o -o ./build/tests/test_createjob.o -pthread
+	@gcc ./build/init.o ./build/cancel.o ./build/createjob.o ./build/listjobs.o ./build/pause.o ./build/progress.o ./build/stats.o ./build/tests/job_list.o -o ./build/tests/test_job_list.o -pthread
+
+test_create_job: test_compile
 	@./build/tests/test_createjob.o
+
+test_list_job: test_compile
+	@./build/tests/test_job_list.o
 
 clear_tests:
 	@rm -rf ./tests/dst

@@ -19,10 +19,8 @@ void* copy_process(void* argv){
     copyjob_t job_id = *(int*)argv;
     sem_wait(&semaphore);
 
-    printf("Processing JOB %d ...\n", job_id);
-
     pthread_mutex_lock(&job_stats_mutexes[job_id]);
-    jobs_stats[job_id].state == IN_PROGRESS;
+    jobs_stats[job_id].state = IN_PROGRESS;
     int source_fd = jobs_stats[job_id].src_fd;
     int dest_fd = jobs_stats[job_id].dst_fd;
     int copied_size = jobs_stats[job_id].copied_size;
