@@ -61,7 +61,7 @@ int call_command(int code)
             return 0;
         case LIST:
             // List all JOBS with their state (IN PROGRESS, WAITING, PAUSED)
-            printf("List jobs\n");
+            copy_listjobs();
             return 0;
         
         case PAUSE:
@@ -72,11 +72,13 @@ int call_command(int code)
             return 0;
         case RESUME:
             // Resume JOB execution
+            scanf("%d", &job_id);
             printf("Resume a JOB\n");
             return 0;
         case STATS:
             // Optain JOB stats and progress
-            printf("JOB stats\n");
+            scanf("%d", &job_id);
+            copy_progress(job_id);
             return 0;
         case CANCEL:
             scanf("%d", &job_id);
@@ -133,7 +135,7 @@ int main()
         scanf("%s", command);
         command_code = parse_command(command);
         if (call_command(command_code)){
-            printf("Invalid command, please entry a valid command!");
+            printf("Invalid command, please entry a valid command!\n");
         }
     }
     return 0;
