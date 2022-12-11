@@ -29,7 +29,6 @@ void* copy_process(void* argv){
 
     while (copied_size < total_size){
         pthread_mutex_lock(&job_mutexes[job_id]);
-
         pthread_mutex_lock(&job_stats_mutexes[job_id]);
         if (jobs_stats[job_id].state == CANCELED){
 
