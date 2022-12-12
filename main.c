@@ -68,11 +68,13 @@ int call_command(int code)
             // Pause JOB execution
             scanf("%d", &job_id);
             copy_pause(job_id);
+            printf("Job %d paused!\n", job_id);
             return 0;
         case RESUME:
             // Resume JOB execution
             scanf("%d", &job_id);
             copy_resume(job_id);
+            printf("Job %d resumed!\n", job_id);
             return 0;
         case STATS:
             // Optain JOB stats and progress
@@ -98,14 +100,15 @@ int call_command(int code)
                 }
             }
             if (!safe_quit){
-                printf("You still have some copy jobs in progress! Cancel all jobs or wait until they are done [c|w]");
+                printf("You still have some copy jobs in progress or paused! Cancel ALL jobs | Unpause and Wait ALL jobs | Abort action [c|w|a]");
                 char response[1];
                 scanf("%s", response);
                 if (strcmp(response, "c") == 0){
                     for (int i = 0; i < MAX_THREADS; i++){
                         if (jobs_stats[i].state != AVAILABLE) copy_cancel(i);
                     }
-                } else {
+                } 
+                else  {
                     // Wait until all jobs will finish
                     for (int i = 0; i < MAX_THREADS; i++){
                         sem_wait(&semaphore);

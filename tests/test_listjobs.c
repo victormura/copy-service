@@ -18,14 +18,14 @@ int main(){
     if (init_global_vars()){
         return -1;
     }
-    int nr_of_jobs = 100;
+    int nr_of_jobs = 20;
     for (int i = 0; i<nr_of_jobs; i++){
         char dst[256];
         sprintf(dst, "tests/dst/test%d.txt", i);
         copyjob_t job_id = copy_createjob("tests/src/test.txt", dst);
-        printf("Init JOB = %d.\n", job_id);
         fflush(NULL);
     }
+    copy_listjobs();
     for (int i = 0; i < MAX_THREADS; i++){
         sem_wait(&semaphore);
     }
