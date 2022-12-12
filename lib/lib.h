@@ -5,6 +5,7 @@
 #include <semaphore.h>
 #include "../config.h"
 
+// STATES
 #define AVAILABLE 0
 #define IN_PROGRESS 1
 #define WAITING 2
@@ -31,7 +32,16 @@ extern pthread_mutex_t job_stats_mutexes[MAX_JOBS];
 extern sem_t semaphore;
 extern copyjob_stats jobs_stats[MAX_JOBS];
 
+// Column max lengths
+extern int C_JOB_ID_LENGTH;
+extern int C_PROGRESS_LENGTH;
+extern int C_STATE_LENGTH;
+
+// Helpers
+int number_of_digits(int number);
+char * generate_cell(const char * cell_value, int max_column_length);
 int init_global_vars();
+int job_exists(copyjob_t job);
 
 // Library interface
 copyjob_t copy_createjob(char *src, char *dst);
@@ -50,6 +60,5 @@ int copy_listjobs();
 
 void copy_freestats(copyjob_stats *stats);
 
-int job_exists(copyjob_t job);
 
 #endif // LIB_H_

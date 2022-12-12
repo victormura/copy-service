@@ -4,15 +4,15 @@
 
 int copy_listjobs()
 {
-    // list: 
-    // # JOB ID | Progress              | State
-    // JOB 1    | ######............... | IN PROGRESS
-    // JOB 2    | ###########.......... | IN PROGRESS
-    // JOB 3    | #######.............. | IN PROGRESS
-    // JOB 4    | ..................... | WAITING
-    // JOB 5    | ..................... | WAITING
-    // JOB 6    | #########............ | PAUSED
-    printf("JOB ID |                                                 PROGRESS                                                       |  State\n");
+    // Print Header
+    printf(
+        "%s | %s | %s \n",
+        generate_cell("JOB ID", C_JOB_ID_LENGTH),
+        generate_cell("PROGRESS", C_PROGRESS_LENGTH),
+        generate_cell("STATE", C_STATE_LENGTH)
+    );
+
+    // Print JOBS Progress
     for(copyjob_t job_id = 0; job_id < MAX_JOBS; job_id++)
         {
             pthread_mutex_lock(&job_stats_mutexes[job_id]);
