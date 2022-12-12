@@ -90,7 +90,7 @@ int call_command(int code)
         case CANCEL:
             scanf("%d", &job_id);
             copy_cancel(job_id);
-            printf("Cancel JOB %d\n", job_id);
+            printf("Job %d canceled!\n", job_id);
             return 0;
 
         case QUIT: ;

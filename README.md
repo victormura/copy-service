@@ -12,6 +12,33 @@
 
 ## Comand line Interface
 ```
+$ help
+cp -- Start a copy process
+cp source_file target_file
+
+ls -- List information about every copy process
+
+quit -- End all processes
+
+cancel -- Cancel an ongoing copy process
+cancel target_job
+
+pause -- Halt an ongoing process until resumed
+pause target_job
+
+resume -- Resume a paused process
+resume target_job
+
+stats -- Get information about an ongoing process
+stats target_job
+```
+
+```
+$ cp src_path dst_path
+Copy job with ID=0 has started!
+```
+
+```
 $ ls
 JOB ID  | PROGRESS                                         | STATE
 JOB 0   | 0 [                                        ] 100 | WAITING              
@@ -30,11 +57,31 @@ JOB 13  | 0 [                                        ] 100 | IN_PROGRESS
 JOB 14  | 0 [                                        ] 100 | WAITING              
 JOB 15  | 0 [                                        ] 100 | WAITING              
 JOB 16  | 0 [                                        ] 100 | WAITING       
+```
 
-$ cp src_path dst_path
-Copy job with ID=X has started!
+```
+$ stats 0
+JOB 0   | 0 [############                            ] 100 | IN_PROGRESS
+```
 
+```
+$ pause 0
+Job 0 paused!
+```
 
+```
+$ resume 0
+Job 0 resumed!
+```
+
+```
+$ cancel 0
+Job 0 canceled!
+```
+
+```
+$ quit 
+Quit!
 ```
 
 ## Compiling and run service
