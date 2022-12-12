@@ -8,16 +8,10 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-int job_exists(copyjob_t job){
-    if (job >= MAX_JOBS || job < 0){
-        printf("Job %d doesn't exist!\n", job);
-        return -1;
-    }
-    return 0;
-}
 
 int copy_pause(copyjob_t job)
 {
+    // Validate Job ID
     if(job_exists(job)) return -1;
     if (jobs_stats[job].state == AVAILABLE || jobs_stats[job].state == CANCELED){
         printf("Inactive process!\n");
@@ -28,12 +22,14 @@ int copy_pause(copyjob_t job)
         return -1;
     }
     if (jobs_stats[job].state == IN_PROGRESS || jobs_stats[job].state == WAITING){
+        // Lock Execution
         pthread_mutex_lock(&job_mutexes[job]);
+        // Update State
         pthread_mutex_lock(&job_stats_mutexes[job]);
         jobs_stats[job].state = PAUSED;
         pthread_mutex_unlock(&job_stats_mutexes[job]);
+        // Free Resource
         sem_post(&semaphore);
-        printf("Job %d paused!\n", job);
         return 0;
     }
 };

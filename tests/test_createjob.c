@@ -25,12 +25,9 @@ int main(){
         copyjob_t job_id = copy_createjob("tests/src/test.txt", dst);
         fflush(NULL);
     }
-    for(int i = 0 ; i < 5; i++){
-        copy_listjobs();
-        sleep(3);
-    }
     for (int i = 0; i < MAX_THREADS; i++){
         sem_wait(&semaphore);
     }
+    printf("Passed!\n");
     return 0;
 }
