@@ -18,6 +18,7 @@
 #define RESUME 4
 #define STATS 5
 #define LIST 6
+#define HELP 7
 
 // Global vars
 pthread_mutex_t job_mutexes[MAX_JOBS];
@@ -37,6 +38,7 @@ int parse_command(char *command)
     else if (strcmp(command, "pause") == 0) return PAUSE;
     else if (strcmp(command, "resume") == 0) return RESUME;
     else if (strcmp(command, "stats") == 0) return STATS;
+    else if (strcmp(command, "help") == 0) return HELP;
     return INVALID_COMMAND;
 }
 
@@ -59,6 +61,7 @@ int call_command(int code)
             }
             printf("Copy job with ID=%d has started!\n", job_id);
             return 0;
+
         case LIST:
             // List all JOBS with their state (IN PROGRESS, WAITING, PAUSED)
             copy_listjobs();
@@ -70,22 +73,26 @@ int call_command(int code)
             copy_pause(job_id);
             printf("Job %d paused!\n", job_id);
             return 0;
+
         case RESUME:
             // Resume JOB execution
             scanf("%d", &job_id);
             copy_resume(job_id);
             printf("Job %d resumed!\n", job_id);
             return 0;
+
         case STATS:
             // Optain JOB stats and progress
             scanf("%d", &job_id);
             copy_progress(job_id);
             return 0;
+
         case CANCEL:
             scanf("%d", &job_id);
             copy_cancel(job_id);
             printf("Cancel JOB %d\n", job_id);
             return 0;
+
         case QUIT: ;
             int safe_quit = 1;
             for (int i = 0; i < MAX_JOBS; i++){
@@ -110,6 +117,16 @@ int call_command(int code)
                 } else return 0;
             }
             printf("Quit!\n");
+            return 0;
+
+        case HELP: ;
+            printf("cp -- Start a copy process\ncp source_file target_file\n\n");
+            printf("ls -- List information about every copy process\n\n");
+            printf("quit -- End all processes\n\n");
+            printf("cancel -- Cancel an ongoing copy process\ncancel target_job\n\n");
+            printf("pause -- Halt an ongoing process until resumed\npause target_job\n\n");
+            printf("resume -- Resume a paused process\nresume target_job\n\n");
+            printf("stats -- Get information about an ongoing process\nstats target_job\n");
             return 0;
         default:
             return -1;
