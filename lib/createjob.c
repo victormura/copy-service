@@ -9,10 +9,6 @@
 #include <unistd.h>
 #include <time.h>
 
-int increase_copied_size(copyjob_t job_id, int size){
-    pthread_mutex_lock(&job_stats_mutexes[job_id]);
-    pthread_mutex_unlock(&job_stats_mutexes[job_id]);
-}
 
 void* copy_process(void* argv){
     copyjob_t job_id = *(int*)argv;
