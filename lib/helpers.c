@@ -14,10 +14,11 @@ int number_of_digits(int number){
 }
 
 char * generate_cell(const char * cell_value, int max_column_length){
-    int cell_value_len = strlen(cell_value);
+    int cell_value_len = strlen(cell_value); 
     char * column = (char *)malloc(sizeof(char) * (max_column_length+1));
     for (int i = 0; i<cell_value_len; i++) column[i] = cell_value[i];
     for (int i = cell_value_len; i<max_column_length; i++) column[i] = ' ';
+    column[max_column_length] = '\0';
     return column;
 }
 
