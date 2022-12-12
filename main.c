@@ -87,12 +87,6 @@ int call_command(int code)
             printf("Cancel JOB %d\n", job_id);
             return 0;
         case QUIT: ;
-            // Quit DAEMON execution
-            // If are processes in progress ask user if he wants to cancel all or wait until they are done.
-            // -> Y - CANCEL ALL
-            // -> N - WAIT ALL
-            // for i in range(MAX_THEREADS) = 10/ 10THREDS -> 10 Ocupate -> 5
-            //     sem_wait(&semaphore) -> asteapta toate threadurile din semaphore sa se elibereze
             int safe_quit = 1;
             for (int i = 0; i < MAX_JOBS; i++){
                 if(jobs_stats[i].state != AVAILABLE){
@@ -108,12 +102,12 @@ int call_command(int code)
                         if (jobs_stats[i].state != AVAILABLE) copy_cancel(i);
                     }
                 } 
-                else  {
+                else if ((strcmp(response, "w") == 0)) {
                     // Wait until all jobs will finish
                     for (int i = 0; i < MAX_THREADS; i++){
                         sem_wait(&semaphore);
                     }
-                }
+                } else return 0;
             }
             printf("Quit!\n");
             return 0;
