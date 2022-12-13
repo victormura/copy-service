@@ -106,15 +106,10 @@ copyjob_t copy_createjob(char *src, char *dst)
 	};
 
     // Ask user if OVERWRITE or not the file
+    char overwrite[2];
 	if (dest_exists){
-        char buf[1];
-        fgets(buf, 1, stdin);
-        char buf2[1];
-        fgets(buf2, 1, stdin);
-        char overwrite[1];
 		printf("In file '%s' you already have something, do you want to OVERWRITE! [y/n]: ", dst);
-        if(!fgets(overwrite, 1, stdin)) return -1;
-        printf("%d %d %d", buf[0], buf2[0], overwrite[0]);
+        if(!fgets(overwrite, 2, stdin)) return -1;
 		if (strcmp(overwrite, "Y") == 0 || strcmp(overwrite, "y") == 0){
             // Delete FILE if OVERWRITE - YES
             if (unlink(dst)){

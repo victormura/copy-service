@@ -46,7 +46,7 @@ int parse_command(char *command)
 
 int call_command(char input[])
 {
-    int code = parse_command(strtok(input, " "));
+    int code = parse_command(strtok(input, " ")); //" " -> "\0"
     copyjob_t job_id;
     char buf[number_of_digits(MAX_JOBS)];
     switch (code){
@@ -58,7 +58,7 @@ int call_command(char input[])
 
             src = strtok(NULL, " ");
             dst = strtok(NULL, " ");
-            //printf("%s\n%s\n", src, dst);
+            printf("%s\n%s\n", src, dst);
 
             if(!strlen(src) || !strlen(dst)) return -1;
 
