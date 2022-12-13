@@ -8,6 +8,7 @@
 #include <semaphore.h>
 #include <errno.h>
 #include <ctype.h>
+#include <linux/limits.h>
 
 // Define commands
 #define INVALID_COMMAND -1
@@ -19,13 +20,15 @@
 #define STATS 5
 #define LIST 6
 #define HELP 7
+#define CONTINUE 8
+
+#define MAX_INPUT_LENGTH 2 * PATH_MAX + 256
 
 // Global vars
 pthread_mutex_t job_mutexes[MAX_JOBS];
 pthread_mutex_t job_stats_mutexes[MAX_JOBS];
 sem_t semaphore;
 copyjob_stats jobs_stats[MAX_JOBS];
-
 // Input command parser
 int parse_command(char *command)
 {
@@ -42,53 +45,75 @@ int parse_command(char *command)
     return INVALID_COMMAND;
 }
 
-int call_command(int code)
+int call_command(char input[])
 {
+    int code = parse_command(strtok(input, " ")); //" " -> "\0"
     copyjob_t job_id;
+    char buf[number_of_digits(MAX_JOBS)];
+    int max_argc = 2;
+    char ** argv = (char**)malloc(sizeof(char*)*max_argc);
+
+    for (int i = 0; i< max_argc; i++){
+        argv[i] = (char*)malloc(sizeof(char)*PATH_MAX);
+        argv[i] = strtok(NULL, " ");
+    }
+    int number_of_arguments = 0;
+    // Check args
+    switch (code)
+    {
+        case CREATE:
+            number_of_arguments = 2;
+            break;
+        case STATS:
+        case RESUME:
+        case PAUSE:
+        case CANCEL:
+            number_of_arguments = 1;
+            break;
+        default:
+            break;
+    }
+    for (int i = 0; i < number_of_arguments; i++){
+        if (argv[i] == NULL) return -1;
+    };
+
     switch (code){
         case CREATE: ;
             // Create new copy JOB
-            char *src, *dst;
-            src = (char *)malloc(sizeof(char)*256);
-            dst = (char *)malloc(sizeof(char)*256);
-            scanf("%s", src);
-            scanf("%s", dst);
-
-            job_id = copy_createjob(src, dst);
+            job_id = copy_createjob(argv[0], argv[1]);
             if (job_id == -1) {
                 printf("Couldn't create a new job!\n");
-                return 0;
+                break;
             }
             printf("Copy job with ID=%d has started!\n", job_id);
-            return 0;
-
+            break;
         case LIST:
             // List all JOBS with their state (IN PROGRESS, WAITING, PAUSED)
             copy_listjobs();
-            return 0;
+            break;
         
-        case PAUSE:
+        case PAUSE: 
             // Pause JOB execution
-            scanf("%d", &job_id);
+            job_id = atoi(argv[0]); 
             copy_pause(job_id);
             printf("Job %d paused!\n", job_id);
-            return 0;
+            break;
 
         case RESUME:
             // Resume JOB execution
-            scanf("%d", &job_id);
+            job_id = atoi(argv[0]); 
             copy_resume(job_id);
             printf("Job %d resumed!\n", job_id);
-            return 0;
+            break;
 
         case STATS:
             // Optain JOB stats and progress
-            scanf("%d", &job_id);
+            job_id = atoi(argv[0]); 
             copy_progress(job_id);
-            return 0;
+            break;
 
         case CANCEL:
-            scanf("%d", &job_id);
+            job_id = atoi(argv[0]); 
             copy_cancel(job_id);
             printf("Job %d canceled!\n", job_id);
             return 0;
@@ -102,8 +127,9 @@ int call_command(int code)
             }
             if (!safe_quit){
                 printf("You still have some copy jobs in progress or paused! Cancel ALL jobs | Unpause and Wait ALL jobs | Abort action [c|w|a]");
-                char response[1];
-                scanf("%s", response);
+                char response[3];
+                if(!fgets(response, 3, stdin)) return -1;
+                response[strcspn(response, "\n")] = 0;
                 if (strcmp(response, "c") == 0){
                     for (int i = 0; i < MAX_THREADS; i++){
                         if (jobs_stats[i].state != AVAILABLE) copy_cancel(i);
@@ -111,13 +137,21 @@ int call_command(int code)
                 } 
                 else if ((strcmp(response, "w") == 0)) {
                     // Wait until all jobs will finish
+                    for (int i = 0; i < MAX_JOBS; i++){
+                        if (jobs_stats[i].state == PAUSED) copy_resume(i);
+                    }
+                    printf("Waiting");
+                    fflush(NULL);
                     for (int i = 0; i < MAX_THREADS; i++){
+                        if (i % (MAX_THREADS/5) == 0) printf(".");
+                        fflush(NULL);
                         sem_wait(&semaphore);
                     }
-                } else return 0;
+                    printf("\n");
+                } else return CONTINUE;
             }
             printf("Quit!\n");
-            return 0;
+            break;
 
         case HELP: ;
             printf("cp -- Start a copy process\ncp source_file target_file\n\n");
@@ -127,10 +161,11 @@ int call_command(int code)
             printf("pause -- Halt an ongoing process until resumed\npause target_job\n\n");
             printf("resume -- Resume a paused process\nresume target_job\n\n");
             printf("stats -- Get information about an ongoing process\nstats target_job\n");
-            return 0;
+            break;
         default:
             return -1;
     }
+    return code;
 }
 
 int main()
@@ -138,16 +173,16 @@ int main()
     if (init_global_vars()){
         return -1;
     }
-
+    char command[MAX_INPUT_LENGTH];
     // Command processing
     int command_code = INVALID_COMMAND;
     while (command_code != QUIT)
     {
-        char command[256];
         printf("$ ");
-        scanf("%s", command);
-        command_code = parse_command(command);
-        if (call_command(command_code)){
+        while(fgets(command, MAX_INPUT_LENGTH, stdin) == NULL);
+        command[strcspn(command, "\n")] = 0;
+        command_code = call_command(command);
+        if (command_code < 0){
             printf("Invalid command, please entry a valid command!\n");
         }
     }

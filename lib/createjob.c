@@ -84,8 +84,7 @@ copyjob_t copy_createjob(char *src, char *dst)
     struct stat src_stats;
 	if (lstat(src, &src_stats) == -1) {
 		perror("lstat");
-		exit(EXIT_FAILURE);
-		return 1;
+		return -1;
 	}
 
     // Check Destination File Exists
@@ -102,11 +101,11 @@ copyjob_t copy_createjob(char *src, char *dst)
 	};
 
     // Ask user if OVERWRITE or not the file
+    char overwrite[3];
 	if (dest_exists){
-        char overwrite[1];
 		printf("In file '%s' you already have something, do you want to OVERWRITE! [y/n]: ", dst);
-		scanf("%s", overwrite);
-
+        if(!fgets(overwrite, 3, stdin)) return -1;
+        overwrite[strcspn(overwrite, "\n")] = 0;
 		if (strcmp(overwrite, "Y") == 0 || strcmp(overwrite, "y") == 0){
             // Delete FILE if OVERWRITE - YES
             if (unlink(dst)){
@@ -120,8 +119,9 @@ copyjob_t copy_createjob(char *src, char *dst)
 			printf("Canceled!\n");
 			return -1;
 		}
-	}
 
+	}
+ 
     // Create and Open Destination File
 	int dest_fd = open(dst, O_WRONLY|O_CREAT, S_IRUSR | S_IWUSR);
 	if (dest_fd < 0) {
