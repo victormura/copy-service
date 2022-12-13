@@ -115,8 +115,8 @@ int call_command(char input[])
         case CANCEL:
             job_id = atoi(argv[0]); 
             copy_cancel(job_id);
-            printf("Cancel JOB %d\n", job_id);
-            break;
+            printf("Job %d canceled!\n", job_id);
+            return 0;
 
         case QUIT: ;
             int safe_quit = 1;
