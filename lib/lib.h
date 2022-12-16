@@ -41,7 +41,8 @@ extern int C_STATE_LENGTH;
 int number_of_digits(int number);
 char * generate_cell(const char * cell_value, int max_column_length);
 int init_global_vars();
-int job_exists(copyjob_t job);
+int job_validate(copyjob_t job);
+int safe_quit();
 
 // Library interface
 copyjob_t copy_createjob(char *src, char *dst);

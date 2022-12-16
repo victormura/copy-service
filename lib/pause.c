@@ -11,8 +11,6 @@
 
 int copy_pause(copyjob_t job)
 {
-    // Validate Job ID
-    if(job_exists(job)) return -1;
     if (jobs_stats[job].state == AVAILABLE || jobs_stats[job].state == CANCELED){
         printf("Inactive process!\n");
         return -1;

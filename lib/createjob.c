@@ -8,6 +8,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <time.h>
+#include <sys/types.h>
 
 
 void* copy_process(void* argv){
@@ -79,6 +80,7 @@ void* copy_process(void* argv){
 copyjob_t copy_createjob(char *src, char *dst)
 {
     copyjob_t job_id = -1;
+    int dest_fd;
 
     // Get Source File Stats
     struct stat src_stats;
@@ -93,6 +95,15 @@ copyjob_t copy_createjob(char *src, char *dst)
 	if (lstat(dst, &dest_stats) == -1) {
 		dest_exists = 0;
 	}
+
+    // Check Destination file is not write-locked
+    else if((dest_fd = open(dst, O_WRONLY)) < 0)
+    {
+        perror("Destination file is write-locked!");
+        return -1;
+    }
+    close(dest_fd);
+    
 
     int source_fd = open(src, O_RDONLY);
 	if (source_fd < 0) {
@@ -123,7 +134,7 @@ copyjob_t copy_createjob(char *src, char *dst)
 	}
  
     // Create and Open Destination File
-	int dest_fd = open(dst, O_WRONLY|O_CREAT, S_IRUSR | S_IWUSR);
+	dest_fd = open(dst, O_WRONLY|O_CREAT, S_IRUSR | S_IWUSR);
 	if (dest_fd < 0) {
         perror("Can not open destination file!\n");
 		return -1;
