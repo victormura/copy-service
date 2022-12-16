@@ -22,9 +22,6 @@ void* resume_process(void* argv){
 
 int copy_resume(copyjob_t job)
 {
-    // Validate Job ID
-    if(job_exists(job)) return -1;
-
     // Update Job State
     pthread_mutex_lock(&job_stats_mutexes[job]);
     jobs_stats[job].state = WAITING;

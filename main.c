@@ -45,11 +45,36 @@ int parse_command(char *command)
     return INVALID_COMMAND;
 }
 
+int cast_job_id(char* input)
+{
+    char* endptr;
+    long long var = strtol(input, &endptr, 10);
+    errno = 0;
+
+    // Validate job id input 
+    if (errno == ERANGE)
+    {
+        printf("Sorry, this number is too small or too large.\n");
+        return -1;
+    }
+    else if (endptr == input)
+        return -1;
+    else if (*endptr && *endptr != '\n')
+        return -1;
+    else if(var >= MAX_JOBS || var < 0)
+        return -1;
+    
+    copyjob_t job_id = (int)var;
+    if(job_validate(job_id))
+        return -1;
+    return job_id;
+    
+}
+
 int call_command(char input[])
 {
     int code = parse_command(strtok(input, " ")); //" " -> "\0"
     copyjob_t job_id;
-    char buf[number_of_digits(MAX_JOBS)];
     int max_argc = 2;
     char ** argv = (char**)malloc(sizeof(char*)*max_argc);
 
@@ -94,62 +119,37 @@ int call_command(char input[])
         
         case PAUSE: 
             // Pause JOB execution
-            job_id = atoi(argv[0]); 
+            if(job_id = cast_job_id(argv[0]) < 0)
+                return INVALID_COMMAND;
             copy_pause(job_id);
             printf("Job %d paused!\n", job_id);
             break;
 
         case RESUME:
             // Resume JOB execution
-            job_id = atoi(argv[0]); 
+            if(job_id = cast_job_id(argv[0]) < 0)
+                return INVALID_COMMAND;
             copy_resume(job_id);
             printf("Job %d resumed!\n", job_id);
             break;
 
         case STATS:
             // Optain JOB stats and progress
-            job_id = atoi(argv[0]); 
+            if(job_id = cast_job_id(argv[0]) < 0)
+                return INVALID_COMMAND;
             copy_progress(job_id);
             break;
 
         case CANCEL:
-            job_id = atoi(argv[0]); 
+            if(job_id = cast_job_id(argv[0]) < 0)
+                return INVALID_COMMAND;
             copy_cancel(job_id);
             printf("Job %d canceled!\n", job_id);
-            return 0;
+            break;
 
         case QUIT: ;
-            int safe_quit = 1;
-            for (int i = 0; i < MAX_JOBS; i++){
-                if(jobs_stats[i].state != AVAILABLE){
-                    safe_quit = 0;
-                }
-            }
-            if (!safe_quit){
-                printf("You still have some copy jobs in progress or paused! Cancel ALL jobs | Unpause and Wait ALL jobs | Abort action [c|w|a]");
-                char response[3];
-                if(!fgets(response, 3, stdin)) return -1;
-                response[strcspn(response, "\n")] = 0;
-                if (strcmp(response, "c") == 0){
-                    for (int i = 0; i < MAX_THREADS; i++){
-                        if (jobs_stats[i].state != AVAILABLE) copy_cancel(i);
-                    }
-                } 
-                else if ((strcmp(response, "w") == 0)) {
-                    // Wait until all jobs will finish
-                    for (int i = 0; i < MAX_JOBS; i++){
-                        if (jobs_stats[i].state == PAUSED) copy_resume(i);
-                    }
-                    printf("Waiting");
-                    fflush(NULL);
-                    for (int i = 0; i < MAX_THREADS; i++){
-                        if (i % (MAX_THREADS/5) == 0) printf(".");
-                        fflush(NULL);
-                        sem_wait(&semaphore);
-                    }
-                    printf("\n");
-                } else return CONTINUE;
-            }
+            if(safe_quit())
+                return CONTINUE;
             printf("Quit!\n");
             break;
 
