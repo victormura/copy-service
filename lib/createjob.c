@@ -25,6 +25,7 @@ void* copy_process(void* argv){
     int total_size = jobs_stats[job_id].total_size;
     pthread_mutex_unlock(&job_stats_mutexes[job_id]);
 
+    char buf[BATCH_SIZE];
     // Start Copy Process
     while (copied_size < total_size){
         pthread_mutex_lock(&job_mutexes[job_id]);
@@ -41,12 +42,11 @@ void* copy_process(void* argv){
         pthread_mutex_unlock(&job_stats_mutexes[job_id]);
 
         // Read
-        char * buf = (char*)malloc(BATCH_SIZE);
 		int read_size = read(source_fd, buf, BATCH_SIZE);
 		if (read_size < 0) {
 			perror ("Read error occured!");
             copy_cancel(job_id);
-			return NULL;
+			break;
 		};
 
         // Write
@@ -54,7 +54,7 @@ void* copy_process(void* argv){
         if (write_size < 0) {
             perror ("Read error occured!");
             copy_cancel(job_id);
-            return NULL;
+            break;
         };
 
         // Update Copied Size
@@ -63,10 +63,11 @@ void* copy_process(void* argv){
         jobs_stats[job_id].copied_size = copied_size;
         pthread_mutex_unlock(&job_stats_mutexes[job_id]);
 
-		free(buf);
         pthread_mutex_unlock(&job_mutexes[job_id]);
     }
-
+    // Close Files
+    close(source_fd);
+    close(dest_fd);
     // Deallocate JOB by setting AVAILABLE state
     pthread_mutex_lock(&job_stats_mutexes[job_id]);
     jobs_stats[job_id].state = AVAILABLE;
@@ -101,8 +102,9 @@ copyjob_t copy_createjob(char *src, char *dst)
     {
         perror("Destination file is write-locked!");
         return -1;
+    } else {
+        close(dest_fd);
     }
-    close(dest_fd);
     
 
     int source_fd = open(src, O_RDONLY);

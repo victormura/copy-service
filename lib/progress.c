@@ -26,7 +26,7 @@ int copy_progress(copyjob_t job_id){
     
     // Print Job Stats Row
     if(job_state == IN_PROGRESS || job_state == WAITING || job_state == PAUSED){
-        char * progress = (char*)malloc(sizeof(char)*(percentage));
+        char progress[percentage];
         for (int i = 0; i < percentage; i++) progress[i] = '#';
 
         char job_value[C_JOB_ID_LENGTH];
