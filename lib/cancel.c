@@ -16,10 +16,6 @@ int copy_cancel(copyjob_t job)
     // Lock Execution
     if (job_state != PAUSED) pthread_mutex_lock(&job_mutexes[job]);
 
-    // Close Files
-    close(dst_fd);
-    close(src_fd);
-
     // Update JOB state
     pthread_mutex_lock(&job_stats_mutexes[job]);
     jobs_stats[job].state = CANCELED;
