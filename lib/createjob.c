@@ -62,7 +62,10 @@ void* copy_process(void* argv){
         copied_size = copied_size + write_size;
         jobs_stats[job_id].copied_size = copied_size;
         pthread_mutex_unlock(&job_stats_mutexes[job_id]);
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin
         pthread_mutex_unlock(&job_mutexes[job_id]);
     }
     // Close Files
@@ -74,12 +77,19 @@ void* copy_process(void* argv){
     pthread_mutex_unlock(&job_stats_mutexes[job_id]);
 
     // Free Resource
+    close(source_fd);
+    close(dest_fd);
     sem_post(&semaphore);
+
 }
 
 
 copyjob_t copy_createjob(char *src, char *dst)
 {
+    if(strcmp(src, dst) == 0){
+        printf("Source and destination cannot be the same!\n");
+        return -1;
+    }
     copyjob_t job_id = -1;
     int dest_fd;
 
@@ -96,7 +106,6 @@ copyjob_t copy_createjob(char *src, char *dst)
 	if (lstat(dst, &dest_stats) == -1) {
 		dest_exists = 0;
 	}
-
     // Check Destination file is not write-locked
     else if((dest_fd = open(dst, O_WRONLY)) < 0)
     {
@@ -105,8 +114,11 @@ copyjob_t copy_createjob(char *src, char *dst)
     } else {
         close(dest_fd);
     }
+    else{
+        close(dest_fd);
+    }
     
-
+    
     int source_fd = open(src, O_RDONLY);
 	if (source_fd < 0) {
         perror("Can not open source file!");
